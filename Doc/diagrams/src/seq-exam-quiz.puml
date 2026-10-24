@@ -1,0 +1,61 @@
+@startuml seq-exam-quiz
+!include _style.iuml
+title シーケンス図① 過去問演習（出題設定 → 解答 → 結果）
+autonumber "<b>[0]"
+
+actor 学習者 as U
+participant "ExamQuizSettingsPage" as Set
+participant "examQuizFilterProvider\n（試験ごとに保存）" as FP
+participant "examQuestionsProvider\n.family(exam)" as EQP
+participant "compute()\n別 isolate" as Iso
+participant "ExamQuizFilter" as Filter
+participant "ExamQuizPage\n+ ExamQuestionView" as Quiz
+participant "questionMistakesProvider" as Mis
+participant "AdManager" as Ad
+participant "ExamQuizResultPage" as Res
+
+U -> Set : 「ITパスポートの実践問題を解く」
+Set -> EQP : watch(itPassport)
+alt 初回のみ
+  EQP -> EQP : rootBundle.loadString(questions.json 約 5〜7MB)
+  EQP -> Iso : parseExamQuestions()
+  Iso -> Iso : ExamQuestion.fromJson\n（選択肢 3 形式 → ア〜エ 4 件に正規化）
+  Iso --> EQP : List<ExamQuestion>
+end
+Set --> U : 出題方式・分野（大／中分類）・実施回・問題数
+U -> Set : 条件を選択
+Set -> FP : 保存（SharedPreferences）
+U -> Set : 開始
+Set -> Quiz : push(ExamQuizPage)
+Quiz -> Filter : apply(all, mistakeCounts)
+note right of Filter
+  random：分野・回で絞ってシャッフル
+  season：1 回分を問番号順
+  weak  ：ミス回数の多い順（同数はランダム）
+end note
+Filter --> Quiz : 出題リスト
+loop 問題数
+  Quiz --> U : 問題文・図表・選択肢
+  opt 図表をタップ
+    Quiz --> U : 全画面ピンチズーム
+  end
+  opt 計算問題
+    U -> Quiz : 電卓を呼び出す
+  end
+  U -> Quiz : 選択肢をタップ
+  Quiz --> U : 正誤＋解説＋出題回
+  alt 不正解
+    Quiz -> Mis : ミス回数 +1（苦手復習の対象）
+  end
+end
+Quiz -> Ad : showInterstitialAd()（3 分以上空ける）
+Ad --> Quiz : onComplete
+Quiz -> Res : pushReplacement(questions, results)
+Res --> U : 正答率と合格ライン 60% の判定、問題ごとの正誤
+opt もう一度（リワード広告）
+  U -> Res : もう一度
+  Res -> Ad : showRewardedAd()
+  Ad --> Res : 報酬獲得 → 問題数を増量
+  Res -> Quiz : pushReplacement(ExamQuizPage(overrideCount))
+end
+@enduml

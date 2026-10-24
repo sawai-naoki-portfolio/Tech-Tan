@@ -1,0 +1,58 @@
+@startuml architecture
+!include _style.iuml
+title システム構成図 — テク単
+
+node "スマートフォン（Android / iOS）" {
+  package "Flutter アプリ" {
+    package "view（画面）" as View {
+      component "SearchPage\n（ホーム）" as Home
+      component "ExamQuizSettingsPage\nExamQuizPage / ResultPage" as Quiz
+      component "ExamQuestionView\n（出題・詳細で共有）" as QView
+      component "WordTestPage / CheckboxTestPage" as WordTest
+      component "Schedule / Category /\nSettings / ItNews" as Others
+    }
+    package "provider / notifier（Riverpod）" as State {
+      component "examQuestionsProvider\nFutureProvider.family<ExamType>" as EQP
+      component "wordsProvider" as WP
+      component "examTypeProvider\n（勉強中の試験）" as ETP
+      component "各 Notifier\nミス回数・しおり・マイリスト\nスケジュール・フィルタ…" as Notifiers
+    }
+    package "utility（モデル・純粋ロジック）" as Util {
+      component "ExamQuestion.fromJson\n選択肢 3 形式を正規化" as EQ
+      component "ExamQuizFilter.apply\n出題方式 × 分野 × 回" as Filter
+      component "normalizeForSearch\n表記ゆれ吸収" as Norm
+      component "ExamType.cumulative\n試験の包含関係" as ET
+    }
+    component "AdManager" as AdM
+  }
+  folder "assets（約 38MB）" as Assets {
+    file "words.json\n2,176 語" as Words
+    file "it_passport / fe / ap\nquestions.json\n計 9,820 問" as QJson
+    file "images/<season>/q<num>/\n図表 約 3,100 枚" as Images
+  }
+  database "SharedPreferences\n学習履歴・設定" as Prefs
+}
+cloud "Google ニュース RSS" as RSS
+cloud "AdMob" as AdMob
+
+Home --> ETP
+Home --> WP
+Quiz --> EQP
+Quiz --> Filter
+Quiz --> QView
+QView --> Images
+EQP --> QJson : compute() で\n別 isolate パース
+EQP --> EQ
+WP --> Words
+Home --> Norm
+WordTest --> ET
+Notifiers --> Prefs
+Others --> RSS : http + xml
+Quiz --> AdM
+AdM --> AdMob
+
+note bottom of EQP
+  3 試験分（約 19MB）を常に抱えず、
+  実際に開いた試験の JSON だけを読む
+end note
+@enduml

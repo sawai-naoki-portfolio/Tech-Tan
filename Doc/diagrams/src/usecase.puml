@@ -1,0 +1,57 @@
+@startuml usecase
+!include _style.iuml
+title ユースケース図 — テク単（情報処理技術者試験の学習アプリ）
+left to right direction
+
+actor "学習者\n（IP / FE / AP 受験者）" as User
+actor "Google ニュース\n(RSS)" as News
+actor "AdMob" as Ads
+
+rectangle "テク単" {
+  usecase "勉強中の試験を切り替える\n（IP / FE / AP）" as UC0
+  package "単語" {
+    usecase "用語を検索する\n（表記ゆれを吸収）" as UC1
+    usecase "単語一覧を見る\n（下位試験を含む累積）" as UC2
+    usecase "マイリストに整理する" as UC3
+    usecase "メモを残す" as UC4
+    usecase "カスタム単語を追加する" as UC5
+    usecase "単語カードを画像で共有する" as UC6
+  }
+  package "テスト" {
+    usecase "単語テスト（4 択）" as UC7
+    usecase "単語チェック問題" as UC8
+    usecase "過去問演習\n（ランダム / 年度別 / 苦手復習）" as UC9
+    usecase "解説と出題回を確認する" as UC10
+    usecase "電卓を使う" as UC11
+    usecase "あとで解き直す\n（しおり）" as UC12
+    usecase "過去問一覧から探す" as UC13
+  }
+  package "学習管理" {
+    usecase "学習スケジュールを管理する" as UC14
+    usecase "受験日までの残り日数を見る" as UC15
+    usecase "IT ニュースを読む" as UC16
+  }
+  usecase "設定（テーマ・キャッシュクリア）" as UC17
+}
+
+User --> UC0
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC7
+User --> UC8
+User --> UC9
+User --> UC13
+User --> UC14
+User --> UC16
+User --> UC17
+UC4 .> UC2 : <<extend>>
+UC5 .> UC2 : <<extend>>
+UC6 .> UC1 : <<extend>>
+UC10 .> UC9 : <<include>>
+UC11 .> UC9 : <<extend>>
+UC12 .> UC9 : <<extend>>
+UC15 .> UC14 : <<include>>
+UC16 --> News
+UC9 --> Ads : インタースティシャル /\nリワード（問題数＋）
+@enduml

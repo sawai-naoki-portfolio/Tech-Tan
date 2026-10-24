@@ -1,0 +1,7 @@
+# このファイルをコピーして android/admob.properties を作り、
+# AdMob 管理画面で発行した「アプリ ID」を設定してください。
+# admob.properties は .gitignore 済みです。
+#
+# 未設定の場合は Google 公式のテスト用アプリ ID が使われます
+# （アプリは動作しますが、広告収益は発生しません）。
+admobAppId=ca-app-pub-3940256099942544~3347511713

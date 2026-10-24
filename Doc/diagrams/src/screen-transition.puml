@@ -1,0 +1,71 @@
+@startuml screen-transition
+!include _style.iuml
+title 画面遷移図 — テク単
+hide empty description
+
+state "S01 ホーム（単語検索）\nSearchPage" as S01
+state "メニュー（ボトムシート）" as Menu
+state "単語" as WordG {
+  state "S10 単語マイリスト" as S10
+  state "S11 マイリストの単語" as S11
+  state "S12 保存した単語" as S12
+  state "S13 単語一覧" as S13
+}
+state "単語テスト" as WTG {
+  state "S20 単語テスト設定" as S20
+  state "S21 単語テスト" as S21
+  state "S22 単語テスト結果" as S22
+  state "S23 単語チェック問題一覧" as S23
+  state "S24 チェック問題テスト" as S24
+}
+state "過去問" as ExamG {
+  state "S30 実践問題の出題設定" as S30
+  state "S31 実践問題（出題）" as S31
+  state "S32 実践問題の結果" as S32
+  state "S33 過去問一覧\n（すべて / しおり / 間違えた）" as S33
+  state "S34 問題詳細" as S34
+  state "S35 図表の全画面表示" as S35
+}
+state "学習管理" as MgmtG {
+  state "S40 スケジュール管理" as S40
+  state "S41 予定の追加・編集" as S41
+  state "S50 IT ニュース" as S50
+  state "S51 記事（WebView）" as S51
+}
+state "設定" as SetG {
+  state "S60 設定" as S60
+  state "S61 テーマ / キャッシュクリア /\n検索履歴 / メモ一覧 /\nプライバシーポリシー / フィードバック" as S61
+}
+
+[*] --> S01
+S01 --> S30 : 「◯◯の実践問題を解く」
+S01 --> Menu : ≡
+Menu --> S10
+Menu --> S20
+Menu --> S23
+Menu --> S30
+Menu --> S33
+Menu --> S40
+Menu --> S50
+Menu --> S60
+S10 --> S11
+S10 --> S12
+S20 --> S21 : 開始
+S21 --> S22 : 全問終了（広告）
+S22 --> S21 : もう一度（リワード広告で問題数＋10）
+S24 --> S22 : 全問終了（広告）
+S22 --> S24 : もう一度（チェック問題から来た場合）
+S23 --> S24
+S30 --> S31 : 開始
+S31 --> S35 : 図表タップ
+S31 --> S32 : 全問終了（広告）
+S32 --> S31 : もう一度（リワード）
+S32 --> S34 : 問題をタップ
+S33 --> S34
+S34 --> S35
+S40 --> S41
+S50 --> S51
+S60 --> S61
+S60 --> S13
+S60 --> S33
+@enduml

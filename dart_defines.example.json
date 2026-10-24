@@ -1,0 +1,11 @@
+{
+  "_comment": "このファイルをコピーして dart_defines.json を作り、AdMob 管理画面で発行した本番用の広告ユニット ID を設定してください（dart_defines.json は .gitignore 済み）。ビルド時は --dart-define-from-file=dart_defines.json を付けます。未設定の場合は Google のテスト用 ID が使われます。",
+  "ADMOB_ANDROID_APP_OPEN": "ca-app-pub-3940256099942544/9257395921",
+  "ADMOB_ANDROID_BANNER": "ca-app-pub-3940256099942544/6300978111",
+  "ADMOB_ANDROID_REWARDED": "ca-app-pub-3940256099942544/5224354917",
+  "ADMOB_ANDROID_INTERSTITIAL": "ca-app-pub-3940256099942544/1033173712",
+  "ADMOB_IOS_APP_OPEN": "ca-app-pub-3940256099942544/9257395921",
+  "ADMOB_IOS_BANNER": "ca-app-pub-3940256099942544/6300978111",
+  "ADMOB_IOS_REWARDED": "ca-app-pub-3940256099942544/5224354917",
+  "ADMOB_IOS_INTERSTITIAL": "ca-app-pub-3940256099942544/1033173712"
+}

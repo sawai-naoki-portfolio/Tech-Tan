@@ -1,0 +1,37 @@
+@startuml seq-search
+!include _style.iuml
+title シーケンス図② 単語検索（表記ゆれの吸収）
+autonumber "<b>[0]"
+
+actor 学習者 as U
+participant "SearchPage" as Page
+participant "searchQueryProvider" as Q
+participant "_SearchResultList" as List
+participant "wordsProvider\n+ customWordsProvider" as W
+participant "examTypeProvider" as ET
+participant "normalizeForSearch" as Norm
+participant "searchHistoryProvider" as Hist
+
+U -> Page : 「さーばー」と入力
+Page -> Page : 250ms デバウンス
+Page -> Q : set("さーばー")
+Q --> List : 再描画（リストだけ。画面全体は再構築しない）
+List -> W : 収録語 2,176 語 ＋ カスタム単語
+List -> ET : 勉強中の試験 → cumulative\n（AP なら IP + FE + AP）
+List -> Norm : normalizeForSearch(入力)
+note right of Norm
+  ① 全角英数 → 半角、英字 → 小文字
+  ② カタカナ → ひらがな
+  ③ 長音符・中黒・空白・区切り記号を削除
+  ④ え段の直後の「い」を落とす（エー / エイ の揺れ）
+  "さーばー" → "さば"
+end note
+loop 各単語
+  List -> Norm : normalizeForSearch(単語名 / 読み)
+  List -> List : 部分一致なら候補へ
+end
+List --> U : 「サーバ」「サーバレス」… を表示
+U -> List : 単語をタップ
+List -> Hist : 履歴に追加
+List --> U : 単語ダイアログ（説明・メモ・マイリスト・共有）
+@enduml

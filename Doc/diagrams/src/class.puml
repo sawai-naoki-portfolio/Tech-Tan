@@ -1,0 +1,131 @@
+@startuml class
+!include _style.iuml
+title クラス図 — テク単（モデルと主要ロジック）
+
+enum ExamType {
+  itPassport（IP, level 0, 100 問/回）
+  fe（FE, level 1, 80 問/回）
+  ap（AP, level 2, 80 問/回）
+  --
+  + id / label / shortLabel
+  + assetDir / newsQuery
+  + level : int
+  + cumulative : List<ExamType>
+  + {static} fromId(id) : ExamType
+}
+
+class ExamQuestion {
+  + exam : ExamType
+  + seasonRaw : String  // "08_haru"
+  + number : int
+  + question : String
+  + choices : List<ExamChoice>  // 常に ア〜エ の 4 件
+  + figures : List<String>
+  + field / category / topic : String
+  + answer : String
+  + explanation : String
+  + isExplanationOriginal : bool
+  + appearances : List<String>
+  + url : String
+  --
+  + id : String
+  + season : ExamSeason
+  + searchKey : String
+  + matches(normalizedQuery) : bool
+  + {static} fromJson(json, exam)
+}
+
+class ExamChoice {
+  + label : String  // ア/イ/ウ/エ
+  + text : String
+  + imagePath : String?
+}
+
+class ExamSeason {
+  + raw : String
+  + year : int
+  + isHeisei : bool
+  + eraYear : int
+  + term : SeasonTerm
+  + label : String  // "令和8年 春期"
+  + compareTo(other) : int
+}
+enum SeasonTerm {
+  haru（春期）
+  toku（特別）
+  menjo（免除）
+  aki（秋期）
+  unknown
+}
+
+enum ExamQuizMode {
+  random（ランダム演習）
+  season（年度別演習）
+  weak（苦手復習）
+}
+
+class ExamQuizFilter {
+  + mode : ExamQuizMode
+  + fields : Set<String>
+  + categories : Set<String>
+  + seasons : Set<String>
+  + targetSeason : String?
+  + questionCount : int
+  --
+  + matchesField(q) : bool
+  + apply(all, mistakeCounts, random) : List<ExamQuestion>
+  + summary() : String
+  + toJson() / fromJson()
+}
+
+class Word {
+  + name : String
+  + yomigana : String
+  + description : String
+  + category : String  // 対象試験
+}
+class WordTestQuestion {
+  + word : Word
+  + options : List<String>
+}
+class Category {
+  + name : String
+  + words : List<String>
+}
+class ScheduleItem {
+  + id / title / subject : String
+  + startTime / endTime : DateTime
+  + description : String
+  + tasks : List<String>
+  + isCompleted : bool
+  + isExamDate : bool
+}
+
+class "search_normalize.dart" as Norm <<utility>> {
+  + normalizeForSearch(input) : String
+  - _collapseEiToE(input) : String
+}
+class "generate_quiz_questions.dart" as Gen <<utility>> {
+  + generateQuizQuestions(words, count) : List<WordTestQuestion>
+}
+
+class AdManager <<static>> {
+  + {static} initialize()
+  + {static} loadAd(AdType)
+  + {static} showInterstitialAd(onComplete)  // 3 分間隔
+  + {static} showRewardedAd(onUserEarned)
+  + {static} bannerAdWidget()
+}
+
+ExamQuestion --> ExamType
+ExamQuestion "1" *-- "4" ExamChoice
+ExamQuestion ..> ExamSeason
+ExamSeason --> SeasonTerm
+ExamQuizFilter --> ExamQuizMode
+ExamQuizFilter ..> ExamQuestion : 絞り込み・並び替え
+ExamQuestion ..> Norm : searchKey
+Word ..> Norm
+WordTestQuestion --> Word
+Gen ..> WordTestQuestion
+Category o-- "*" Word : 単語名で参照
+@enduml

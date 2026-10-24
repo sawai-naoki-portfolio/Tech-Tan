@@ -1,0 +1,33 @@
+@startuml seq-word-test
+!include _style.iuml
+title シーケンス図③ 単語テスト（4 択）
+autonumber "<b>[0]"
+
+actor 学習者 as U
+participant "WordQuizSettingsPage" as Set
+participant "WordTestPage" as Test
+participant "generateQuizQuestions" as Gen
+participant "mistakeCountsProvider" as Mis
+participant "AdManager" as Ad
+participant "WordTestResultPage" as Res
+
+U -> Set : 出題範囲（試験ごとのプリセット）と問題数
+Set -> Test : pushReplacement(WordTestPage)
+Test -> Gen : generateQuizQuestions(範囲内の単語, count)
+Gen -> Gen : 正解 1 ＋ 誤答 3 をシャッフル
+Gen --> Test : List<WordTestQuestion>
+loop 問題数
+  Test --> U : 説明文と 4 つの用語
+  U -> Test : 選択
+  alt 不正解
+    Test -> Mis : ミス回数 +1
+  end
+end
+Test -> Ad : showInterstitialAd()
+Test -> Res : pushReplacement(結果)
+Res --> U : 正解数・間違えた単語
+opt 間違えた単語をチェック登録
+  U -> Res : 結果一覧のチェックボックス
+  Res -> Res : checkedQuestionsProvider に追加\n→「単語チェック問題」で集中して出題
+end
+@enduml
