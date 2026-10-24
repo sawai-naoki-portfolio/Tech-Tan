@@ -1,6 +1,6 @@
 # テク単
 
-> 澤井直輝のポートフォリオ作品のひとつです（[作品一覧へ](https://github.com/sawai-naoki-portfolio/Portfolio)）。
+> 澤井直輝のポートフォリオ作品のひとつです（[作品一覧へ](https://github.com/sawai-naoki-portfolio)）。
 
 情報処理技術者試験の勉強に、頼れる強い味方。
 
