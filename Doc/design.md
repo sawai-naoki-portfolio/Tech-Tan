@@ -129,11 +129,11 @@ IP（ITパスポート）⊂ FE（基本情報）⊂ AP（応用情報）とい�
 
 | 課題 | 対策 |
 |---|---|
-| 過去問 JSON が 3 試験で約 19MB | `examQuestionsProvider` を `FutureProvider.family<…, ExamType>` にし、**実際に開いた試験だけ**を読む |
+| 過去問 JSON が 3 試験で約 19MB（解説を含む開発版。公開版は約 9MB） | `examQuestionsProvider` を `FutureProvider.family<…, ExamType>` にし、**実際に開いた試験だけ**を読む |
 | JSON のパースで UI が固まる | `compute()` で別 isolate に逃がす（`parseExamQuestions` / `parseWords` はトップレベル関数） |
 | 検索の入力ごとに画面全体が再構築される | 250ms デバウンス＋検索結果リストだけを別ウィジェットに切り出して再描画 |
 | Flutter のアセット指定はディレクトリを再帰しない | 画像を含む約 1,900 ディレクトリを `tool/generate_asset_list.dart` で `pubspec.yaml` に生成。登録漏れはテストで検出 |
-| APK サイズ（universal で約 85MB） | App Bundle または `--split-per-abi` で配信 |
+| APK サイズ（開発版の universal で約 85MB） | App Bundle または `--split-per-abi` で配信 |
 | 広告の出しすぎ | インタースティシャルは 3 分、アプリ起動広告は 2 時間の間隔制限 |
 
 ---

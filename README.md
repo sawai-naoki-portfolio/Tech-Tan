@@ -152,7 +152,7 @@ IT用語の単語帳と過去問演習をひとつにまとめた学習アプリ
 
 **必要な試験のデータだけを読む**
 
-過去問 JSON は 3 試験合わせて約 19MB あります。`examQuestionsProvider` を
+過去問 JSON は、解説を含む開発版で 3 試験合わせて約 19MB あります（公開版は収集元の解説を除いたため約 9MB）。`examQuestionsProvider` を
 `FutureProvider.family<List<ExamQuestion>, ExamType>` にして、実際に開いた試験だけを読み込みます。
 パースは `compute()` で別 isolate に逃がし、UI スレッドを止めません。
 
@@ -342,7 +342,7 @@ flutter build apk --release --split-per-abi --dart-define-from-file=dart_defines
 ```
 
 > **Note**
-> 過去問データと図表画像で約 38MB あるため、universal APK は 85MB 前後になります。
+> 開発版では過去問データと図表画像で約 38MB あるため、universal APK は 85MB 前後になります（公開版は解説を除いたため約 28MB）。
 > ストア配信には App Bundle（または `--split-per-abi`）を使ってください。
 
 > **Note**
