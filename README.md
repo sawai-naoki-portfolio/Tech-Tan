@@ -8,6 +8,8 @@
 > | 開発時期 | 2026 年 7 月（コミットの記録: 7/28〜7/29） |
 > | 公開状況 | 未公開 |
 
+[![test](https://github.com/sawai-naoki-portfolio/Tech-Tan/actions/workflows/test.yml/badge.svg)](https://github.com/sawai-naoki-portfolio/Tech-Tan/actions/workflows/test.yml)
+
 情報処理技術者試験の勉強に、頼れる強い味方。
 
 | ホーム（単語検索） | 実践問題の出題設定 | 出題画面 | 解答後の解説 |
